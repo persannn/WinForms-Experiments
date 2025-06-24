@@ -1,4 +1,4 @@
-﻿namespace WinFormsTestApp
+﻿namespace Calculator
 {
     partial class FormCalculator
     {

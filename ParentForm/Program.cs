@@ -1,4 +1,4 @@
-namespace Calculator
+namespace ParentForm
 {
     internal static class Program
     {
@@ -8,8 +8,7 @@ namespace Calculator
         [STAThread]
         static void Main()
         {
-            ApplicationConfiguration.Initialize();
-            Application.Run(new FormCalculator());
+            Application.Run(new ParentForm());
         }
     }
 }

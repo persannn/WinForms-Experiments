@@ -1,11 +1,10 @@
-﻿namespace WinFormsTestApp
+﻿namespace Calculator
 {
     public partial class FormCalculator : Form
     {
 
         private Stack<char> stack = new Stack<char>();
         private char[] operators = { '*', '/', '+', '-' };
-        private float previousResult = 0;
         public FormCalculator()
         {
             InitializeComponent();
@@ -18,7 +17,8 @@
         /// <param name="e"></param>
         private void button_Click(object sender, EventArgs e)
         {
-            // Triple check the logic of this method just to be sure!
+            if (labelDisplay.Text == "Invalid expression!")
+                labelDisplay.Text = string.Empty;
             char buttonText;
             if(stack.Count == 0)
             {
@@ -48,9 +48,14 @@
         {
             if (stack.Count == 0)
                 return;
+            if (labelDisplay.Text == "Invalid expression!")
+            {
+                labelDisplay.Text = string.Empty;
+                return;
+            }
             if (operators.Contains(stack.Peek()) || stack.Peek() == '.')
             {
-                labelDisplay.Text = "Invalid expression";
+                labelDisplay.Text = "Invalid expression!";
                 stack.Clear();
                 return;
             }
@@ -96,28 +101,31 @@
             }
 
             // Multiplication and division
-            for(int i = 0; i < operations.Count; i++)
+            if (labelDisplay.Text.Contains('*') || labelDisplay.Text.Contains('/'))
             {
-                if(floats.Count == 1 || !expressionIsValid)
-                    break;
-                if (operations[i] == '*')
+                for (int i = 0; i < operations.Count; i++)
                 {
-                    floats[i] = floats[i] * floats[i + 1];
-                    floats.RemoveAt(i + 1);
-                    operations.RemoveAt(i);
-                    i--;
-                }
-                else if (operations[i] == '/')
-                {
-                    if (floats[i + 1] == 0)
-                    {
-                        expressionIsValid = false;
+                    if (floats.Count == 1 || !expressionIsValid)
                         break;
+                    if (operations[i] == '*')
+                    {
+                        floats[i] = floats[i] * floats[i + 1];
+                        floats.RemoveAt(i + 1);
+                        operations.RemoveAt(i);
+                        i--;
                     }
-                    floats[i] = floats[i] / floats[i + 1];
-                    floats.RemoveAt(i + 1);
-                    operations.RemoveAt(i);
-                    i--;
+                    else if (operations[i] == '/')
+                    {
+                        if (floats[i + 1] == 0)
+                        {
+                            expressionIsValid = false;
+                            break;
+                        }
+                        floats[i] = floats[i] / floats[i + 1];
+                        floats.RemoveAt(i + 1);
+                        operations.RemoveAt(i);
+                        i--;
+                    }
                 }
             }
 
@@ -150,7 +158,6 @@
             else
             {
                 labelDisplay.Text = floats[0].ToString();
-                previousResult = floats[0];
                 stack.Clear();
                 foreach (char c in labelDisplay.Text)
                     stack.Push(c);
@@ -164,10 +171,15 @@
         /// <param name="e"></param>
         private void buttonDelete_Click(object sender, EventArgs e)
         {
-                if(stack.Count > 0)
+            if(labelDisplay.Text == "Invalid expression!")
+                labelDisplay.Text = string.Empty;
+            else
+            {
+                if (stack.Count > 0)
                     stack.Pop();
-                if(labelDisplay.Text.Length > 0)
+                if (labelDisplay.Text.Length > 0)
                     labelDisplay.Text = labelDisplay.Text.Remove(labelDisplay.Text.Length - 1);
+            }
         }
     }
 }
